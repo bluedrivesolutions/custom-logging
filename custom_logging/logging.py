@@ -25,19 +25,17 @@ class LoggingMixin:
             old_value = getattr(old_instance, field)
             new_value = getattr(self, field)
 
-            if not old_value and not new_value:
-                continue
-
-            if old_value != new_value:
+            if old_value and new_value:
                 changes.append((field, old_value, new_value))
 
         if changes:
             user = self.get_current_user()
-            for field, old_value, new_value in changes:
-                if user:
-                    if not user.username:
-                        return
+            if user is None:
+                return
+            if user.pk is None:
+                return
 
+            for field, old_value, new_value in changes:
                 logger.info(
                     f"{object_name} {self.pk} - {field} changed "
                     f"from `{old_value}` to `{new_value}` by {user}"
