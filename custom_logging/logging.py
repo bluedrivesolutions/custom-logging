@@ -1,6 +1,7 @@
 import logging
 
 from .middleware import get_current_user
+from .utils import convert_string_to_numeric
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +25,15 @@ class LoggingMixin:
         for field in self.logging_fields:
             old_value = getattr(old_instance, field)
             new_value = getattr(self, field)
+            old_value = convert_string_to_numeric(old_value)
+            new_value = convert_string_to_numeric(new_value)
 
-            if old_value and new_value:
-                changes.append((field, old_value, new_value))
+            if old_value == new_value:
+                continue
+            if not old_value and not new_value:
+                continue
+
+            changes.append((field, old_value, new_value))
 
         if changes:
             user = self.get_current_user()
