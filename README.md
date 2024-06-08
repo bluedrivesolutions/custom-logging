@@ -61,11 +61,10 @@ To log authentication actions, you need to import the signals module to any of y
 
 ```python
 # apps.py
-from custom_logging import signals
 
 class MyAppConfig(AppConfig):
     name = 'my_app'
 
     def ready(self):
-        import my_app.signals
+        from custom_logging import signals
 ```
