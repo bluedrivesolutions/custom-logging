@@ -25,12 +25,12 @@ class LoggingMixin:
         for field in self.logging_fields:
             old_value = getattr(old_instance, field)
             new_value = getattr(self, field)
-            old_value = convert_string_to_numeric(old_value)
-            new_value = convert_string_to_numeric(new_value)
+            temp_old_value = convert_string_to_numeric(old_value)
+            temp_new_value = convert_string_to_numeric(new_value)
 
-            if old_value == new_value:
+            if temp_old_value == temp_new_value:
                 continue
-            if not old_value and not new_value:
+            if not temp_old_value and not temp_new_value:
                 continue
 
             changes.append((field, old_value, new_value))
