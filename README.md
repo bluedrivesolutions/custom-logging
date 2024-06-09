@@ -57,14 +57,13 @@ ModelLogger(model_class=DjangoModel, fields_to_log=['field1', 'field2'])
 ModelLogger(model_class=DjangoModel, fields_to_log='__all__')
 ```
 
-To log authentication actions, you need to import the signals module to any apps that is installed in your Django project.
+To log authentication actions, you need to add custom_logging in the INSTALLED_APPS setting in settings.py file.
 
 ```python
-# apps.py of an installed app
-
-class MyAppConfig(AppConfig):
-    name = 'my_app'
-
-    def ready(self):
-        from custom_logging import signals
+# settings.py
+INSTALLED_APPS = [
+    ...
+    'custom_logging',
+    ...
+]
 ```
