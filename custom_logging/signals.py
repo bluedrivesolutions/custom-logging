@@ -38,6 +38,13 @@ def log_user_logout(sender, request, user, **kwargs):
 @receiver(user_login_failed)
 def log_user_login_failed(sender, credentials, request, **kwargs):
     ip = get_ip_from_request(request)
+
+    # Skip if the request is not from Django Admin
+    headers = request.headers.copy()
+    headers = {k.upper(): v.upper() for k, v in headers.items()}
+    if headers.get("CONTENT-TYPE") == "APPLICATION/JSON":
+        return
+
     logger.warning(
         f"User {credentials['username']} with IP {ip} has failed to "
         f"authenticate from Django Admin"
