@@ -10,7 +10,7 @@ try:
 except ImportError:
     raise ImportError("Django is required to use this module")
 
-from .utils import get_ip_from_request
+from custom_logging.utils import get_ip_from_request
 
 logger = logging.getLogger(__name__)
 
