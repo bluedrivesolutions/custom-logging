@@ -29,4 +29,5 @@ class CustomLoggingAuthBackend(ModelBackend):
                 logger.warning(
                     f"User {username} with IP {ip} has failed to authenticate"
                 )
-        return user
+
+        return None  # Return None to prevent login
