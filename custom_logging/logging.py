@@ -12,6 +12,12 @@ class LoggingMixin:
     logging_fields = []
 
     def log_changes(self, old_instance):
+        user = self.get_current_user()
+        if user is None:
+            return
+        if user.pk is None:
+            return
+
         object_name = self.__class__.__name__.capitalize()
         changes = []
 
@@ -38,12 +44,6 @@ class LoggingMixin:
             changes.append((field, old_value, new_value))
 
         if changes:
-            user = self.get_current_user()
-            if user is None:
-                return
-            if user.pk is None:
-                return
-
             for field, old_value, new_value in changes:
                 logger.info(
                     f"{object_name} {self.pk} - {field} changed "
