@@ -12,12 +12,6 @@ class LoggingMixin:
     logging_fields = []
 
     def log_changes(self, old_instance):
-        user = self.get_current_user()
-        if user is None:
-            return
-        if user.pk is None:
-            return
-
         object_name = self.__class__.__name__.capitalize()
         changes = []
 
@@ -44,6 +38,7 @@ class LoggingMixin:
             changes.append((field, old_value, new_value))
 
         if changes:
+            user = self.get_current_user()
             for field, old_value, new_value in changes:
                 logger.info(
                     f"{object_name} {self.pk} - {field} changed "
@@ -51,12 +46,16 @@ class LoggingMixin:
                 )
 
     def save(self, *args, **kwargs):
-        if self.pk:
+        user = self.get_current_user()
+        should_log = user is not None and user.pk is not None
+
+        if self.pk and should_log:
             try:
                 old_instance = self.__class__.objects.get(pk=self.pk)
                 self.log_changes(old_instance)
             except self.__class__.DoesNotExist:
                 pass
+
         save_method = getattr(self, self.original_save_method_name)
         save_method(*args, **kwargs)
 
